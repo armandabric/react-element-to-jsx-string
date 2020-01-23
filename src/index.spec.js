@@ -2,7 +2,7 @@
 
 /* eslint-disable react/no-string-refs */
 
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, Component, Suspense } from 'react';
 import { createRenderer } from 'react-test-renderer/shallow';
 import { mount } from 'enzyme';
 import reactElementToJSXString, { preserveFunctionLineBreak } from './index';
@@ -818,6 +818,16 @@ describe('reactElementToJSXString(ReactElement)', () => {
   testFalse={false}
   testTrue={true}
 />`
+    );
+  });
+
+  it('reactElementToJSXString(<Suspense fallback={() => "Loading..."}>Hello world</Suspense></script>)', () => {
+    expect(
+      reactElementToJSXString(
+        <Suspense fallback={() => 'Loading...'}>Hello world</Suspense>
+      )
+    ).toEqual(
+      `<React.Suspense fallback={() => 'Loading...'}>Hello world</React.Suspense>`
     );
   });
 

@@ -4,6 +4,7 @@ import isPlainObject from 'is-plain-object';
 import { isValidElement } from 'react';
 import formatComplexDataStructure from './formatComplexDataStructure';
 import formatFunction from './formatFunction';
+import formatSymbol from './formatSymbol';
 import formatTreeNode from './formatTreeNode';
 import type { Options } from './../options';
 import parseReactElement from './../parser/parseReactElement';
@@ -24,20 +25,8 @@ const formatPropValue = (
     return `"${escape(propValue)}"`;
   }
 
-  // > "Symbols (new in ECMAScript 2015, not yet supported in Flow)"
-  // @see: https://flow.org/en/docs/types/primitives/
-  // $FlowFixMe: Flow does not support Symbol
   if (typeof propValue === 'symbol') {
-    const symbolDescription = propValue
-      .valueOf()
-      .toString()
-      .replace(/Symbol\((.*)\)/, '$1');
-
-    if (!symbolDescription) {
-      return `{Symbol()}`;
-    }
-
-    return `{Symbol('${symbolDescription}')}`;
+    return `{${formatSymbol(propValue)}}`;
   }
 
   if (typeof propValue === 'function') {
