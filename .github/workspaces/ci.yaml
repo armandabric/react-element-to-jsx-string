@@ -1,0 +1,30 @@
+name: Continuous Integration
+
+on: [pull_request, push] 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["12", "14", "15"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --version
+      - run: yarn install --frozen-lockfile
+      - run: yarn run format
+      - run: yarn run lint
+      - run: yarn run ts:check
+      - run: yarn run test
+      - run: yarn run smoke cjs 15.6.2
+      - run: yarn run smoke esm 15.6.2
+      - run: yarn run smoke cjs 16.7.0
+      - run: yarn run smoke esm 16.7.0
+      - run: yarn run smoke cjs latest
+      - run: yarn run smoke esm latest
+      - run: yarn run smoke cjs next
+      - run: yarn run smoke esm next
